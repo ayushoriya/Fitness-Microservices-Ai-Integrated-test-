@@ -1,0 +1,48 @@
+[Frontend Form / Postman]
+{
+  "email": "ayush@gmail.com",
+  "password": "1234",
+  "firstName": "Ayush",
+  "lastName": "Oriya",
+  "keycloakId": "some-id"
+}
+        |
+        |  HTTP POST /api/users/register
+        v
+[Spring DispatcherServlet]
+- Intercepts all incoming HTTP requests
+- Finds matching controller method based on URL & HTTP method
+        |
+        v
+[UserController.register(@RequestBody RegisterRequest request)]
+- Spring automatically converts JSON → RegisterRequest object
+- request.getEmail(), request.getFirstName() etc. now have values from JSON
+        |
+        v
+[UserService.register(request)]
+- Reads data from RegisterRequest
+- Creates User entity
+        |
+        v
+[UserRepository.save(user)]
+- Saves User entity to PostgreSQL DB
+- Returns saved User entity (with ID, timestamps)
+        |
+        v
+[UserService.register returns UserResponse]
+- Converts User entity → UserResponse DTO
+        |
+        v
+[UserController returns ResponseEntity<UserResponse>]
+- Sends JSON response back to frontend
+{
+  "id": "123",
+  "email": "ayush@gmail.com",
+  "firstName": "Ayush",
+  "lastName": "Oriya",
+  "keycloakId": "some-id"
+}
+        |
+        v
+[Frontend receives JSON]
+- Shows success message, user profile, or proceeds to login

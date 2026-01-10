@@ -1,0 +1,11 @@
+Frontend → POST /api/users/register
+   ↓
+UserController.register()
+   ↓
+UserService.register()
+   ↓
+UserRepository.save() → PostgreSQL
+   ↓
+Response converted to UserResponse
+   ↓
+Sent back to frontend / gateway

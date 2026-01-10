@@ -1,0 +1,57 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      # Routes
+      routes:
+        - id: activity-service-activities
+          uri: lb://ACTIVITY-SERVICE
+          predicates:
+            - Path=/api/activities/**
+
+        - id: activity-service-templates
+          uri: lb://ACTIVITY-SERVICE
+          predicates:
+            - Path=/api/templates/**
+
+        - id: activity-service-sessions
+          uri: lb://ACTIVITY-SERVICE
+          predicates:
+            - Path=/api/workout-sessions/**
+
+        - id: ai-service
+          uri: lb://AI-SERVICE
+          predicates:
+            - Path=/api/recommendations/**
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/users/**
+
+      # ✅ NO CORS HERE - Handled by GatewayCorsConfig.java
+
+      # Discovery
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web.cors: DEBUG
